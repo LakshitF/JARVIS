@@ -18,7 +18,7 @@ from chatterbot import ChatBot
 chatbot = ChatBot("Jarvis")
 
 wapi_key = "21a743f3dbcdac18426bef5c9262183b"
-lat = 30.3534010
+lat = 30.3534010	#currently using custom location for testing purposes
 lng = 76.3692080
 
 
