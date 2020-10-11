@@ -1,6 +1,7 @@
 from gtts import gTTS
 import speech_recognition as sr
 import os
+import random
 import re
 import webbrowser
 import smtplib
@@ -15,13 +16,18 @@ import forecastio
 from chatterbot import ChatBot
 #from chatterbot.trainers import ChatterBotCorpusTrainer
 
-chatbot = ChatBot("Jarvis")
-
 wapi_key = "21a743f3dbcdac18426bef5c9262183b"
 lat = 30.3534010	#currently using custom location for testing purposes
 lng = 76.3692080
 
-
+default_model = [
+    "Very interesting",
+    "I am not sure I understand you fully",
+    "What does that suggest to you?",
+    "Please continue",
+    "Go on",
+    "Do you feel strongly about discussing such things?",
+    ]
  
  
 def say(audio):
@@ -46,8 +52,8 @@ def myCommand():
 
     with sr.Microphone() as source:
         print('Ready...')
-        r.pause_threshold = 1
-        r.adjust_for_ambient_noise(source, duration=1)
+        r.pause_threshold = 2
+        r.adjust_for_ambient_noise(source, duration=0.5)
         audio = r.listen(source)
 
     try:
@@ -56,11 +62,12 @@ def myCommand():
 
     #loop back to continue to listen for commands if unrecognizable speech is received
     except sr.UnknownValueError:
-        print('Your last command couldn\'t be heard')
+        print('Command could not be interpreted, please try again')
         command = myCommand();
 
     return command
 
+ # Reflect and analyze are for the eliza bot, not being currently used
 def reflect(fragment):
     tokens = fragment.lower().split()
     for i, token in enumerate(tokens):
@@ -98,7 +105,9 @@ def assistant(command):
       if 'facebook' in command:
         webbrowser.open('www.facebook.com')
         say('Done!')
-
+      if 'google' in command:
+        webbrowser.open('www.google.com')
+        say('Done!')
       if 'reddit' in command:
          reg_ex = re.search('open reddit (.*)', command)
          url = 'https://www.reddit.com/'
@@ -157,14 +166,16 @@ def assistant(command):
         time.sleep(4)
        
     else:
-        response = chatbot.get_response(command)
-        answer=str(response)
-        say(answer)
+#         response = chatbot.get_response(command)
+#         answer=str(response)
+        rint = random.randint(0,4)
+        say_cmd = default_model[rint]
+        say(say_cmd)
+        
         
 
 
 
-say('I am ready for your command..')
 
 #loop to continue executing multiple commands
 while True:
